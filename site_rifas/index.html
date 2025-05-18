@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="pt-BR" >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rifa da Moto 0KM - Compra com Bônus</title>
+  <style>
+    /* Reset básico */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #0a0a0a;
+      color: #eee;
+      display: flex; flex-direction: column; align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+      user-select: none;
+    }
+    header {
+      width: 100%; padding: 25px 20px;
+      background: linear-gradient(90deg, #001122, #002244);
+      text-align: center;
+      border-bottom: 2px solid #004aad;
+      box-shadow: 0 0 15px #0033aa88;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+      text-shadow: 0 0 8px #00bfff;
+    }
+    header p {
+      font-size: 1.1rem;
+      margin-top: 6px;
+      color: #66cfffaa;
+    }
+    main {
+      flex: 1;
+      width: 90%;
+      max-width: 480px;
+      background: #111;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #004aadbb;
+      padding: 20px;
+      margin: 25px 0 50px;
+      position: relative;
+      z-index: 1;
+    }
+    .premio-img {
+      width: 100%;
+      border-radius: 12px;
+      object-fit: cover;
+      max-height: 260px;
+      margin-bottom: 25px;
+      border: 3px solid #00bfff;
+      box-shadow: 0 0 15px #00bfffaa;
+      transition: transform 0.3s ease;
+      cursor: pointer;
+    }
+    .premio-img:hover {
+      transform: scale(1.05);
+    }
+    .quantidade-control {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 15px;
+    }
+    .quantidade-control button {
+      font-size: 2.8rem;
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      border: none;
+      background: #00bfff;
+      color: #001122;
+      font-weight: 900;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.25s;
+      box-shadow: 0 0 8px #00bfffaa;
+    }
+    .quantidade-control button:disabled {
+      background: #0077bb66;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .quantidade-control input {
+      width: 100px;
+      font-size: 1.7rem;
+      text-align: center;
+      border-radius: 10px;
+      border: none;
+      padding: 10px;
+      color: #001122;
+      font-weight: 700;
+      box-shadow: inset 0 0 10px #00bfff88;
+    }
+    #resumo {
+      font-weight: 700;
+      font-size: 1.4rem;
+      text-align: center;
+      margin-bottom: 25px;
+      color: #00dfff;
+      text-shadow: 0 0 12px #00dfffbb;
+    }
+    button.continuar-btn {
+      width: 100%;
+      background-color: #00bfff;
+      color: #001122;
+      font-weight: 700;
+      padding: 16px;
+      font-size: 1.3rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      box-shadow: 0 0 15px #00bfffcc;
+    }
+    button.continuar-btn:hover {
+      background-color: #00d0ff;
+      box-shadow: 0 0 25px #00d0ffdd;
+    }
+    #form-cadastro {
+      display: none;
+      margin-top: 25px;
+    }
+    #form-cadastro input {
+      width: 100%;
+      padding: 14px;
+      margin: 12px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 1.1rem;
+      color: #001122;
+      font-weight: 700;
+      box-shadow: inset 0 0 10px #00bfff88;
+    }
+    #finalizar-btn {
+      background-color: #00bfff;
+      color: #001122;
+      font-weight: 700;
+      padding: 16px;
+      font-size: 1.3rem;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+      transition: background-color 0.3s;
+      box-shadow: 0 0 15px #00bfffcc;
+    }
+    #finalizar-btn:hover {
+      background-color: #00d0ff;
+      box-shadow: 0 0 25px #00d0ffdd;
+    }
+    footer {
+      width: 100%;
+      background-color: #111;
+      padding: 18px;
+      text-align: center;
+      font-size: 0.95rem;
+      color: #555;
+      border-top: 1px solid #222;
+      user-select: none;
+    }
+    footer a {
+      color: #00bfff;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    footer a:hover {
+      text-decoration: underline;
+    }
+    /* Popup bônus */
+    #popup-bonus {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: #003366;
+      border: 4px solid #00dfff;
+      border-radius: 20px;
+      padding: 30px 40px;
+      color: #00ffff;
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 900;
+      text-shadow: 0 0 15px #00ffffcc;
+      box-shadow: 0 0 30px #00ffffcc;
+      z-index: 1000;
+      pointer-events: none;
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+    #popup-bonus.show {
+      transform: translate(-50%, -50%) scale(1);
+      pointer-events: auto;
+      animation: pulse-glow 1.5s infinite alternate;
+    }
+    @keyframes pulse-glow {
+      0% { text-shadow: 0 0 15px #00ffffcc; box-shadow: 0 0 30px #00ffffcc; }
+      100% { text-shadow: 0 0 30px #00ffffee; box-shadow: 0 0 60px #00ffffee; }
+    }
+    #popup-bonus button {
+      margin-top: 20px;
+      background: #00dfff;
+      border: none;
+      color: #001122;
+      padding: 10px 25px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 0 15px #00dfffcc;
+      transition: background-color 0.3s;
+    }
+    #popup-bonus button:hover {
+      background: #00ffff;
+      box-shadow: 0 0 25px #00ffffdd;
+    }
+    /* Fogos de artifício simples */
+    #fogueira {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .fogo {
+      position: absolute;
+      width: 15px; height: 15px;
+      border-radius: 50%;
+      background: #00ffff;
+      box-shadow:
+        0 0 8px 2px #00ffff,
+        0 0 12px 4px #00ffff99;
+      animation: fogoAnim 800ms ease-out forwards;
+      opacity: 0;
+    }
+    @keyframes fogoAnim {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) scale(0);
+      }
+    }
+  </style>
+
+  	<!-- Meta Pixel Code -->
+<script>
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src='https://connect.facebook.net/en_US/fbevents.js';
+  s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script');
+  
+  fbq('init', '3933066473609927'); 
+  fbq('track', 'PageView');
+</script>
+<noscript>
+  <img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=3933066473609927&ev=PageView&noscript=1"/>
+</noscript>
+<!-- End Meta Pixel Code -->
+
+</head>
+<body>
+
+<header>
+  <h1>🏍️ START 160 0KM</h1>
+  <p>Escolha a quantidade de cotas e ganhe o mesmo valor em bônus grátis!</p>
+</header>
+
+<main>
+<img
+  src="imagens/moto.jpg"
+  alt="Moto 0KM"
+  class="premio-img"
+/>
+
+  <div class="quantidade-control">
+    <button id="menos" aria-label="Diminuir quantidade">−</button>
+    <input type="number" id="quantidade" min="100" max="10000" step="100" value="500" />
+    <button id="mais" aria-label="Aumentar quantidade">+</button>
+  </div>
+
+  <div id="resumo">
+    Receber <span id="totalCotas">1000</span> cotas grátis (compra + bônus)
+  </div>
+
+  <button class="continuar-btn" id="btnContinuar">Validar Cotas</button>
+
+  <form id="form-cadastro">
+    <input type="text" id="nome" placeholder="Primeiro Nome" required />
+    <input type="text" id="whatsapp" placeholder="WhatsApp com DDD" required />
+    <input type="email" id="email" placeholder="Opcional" required />
+    <button type="button" id="finalizar-btn">Finalizar e ir para o Site Oficial</button>
+  </form>
+</main>
+
+<footer>
+  <p>📱 Suporte: <a href="https://wa.me/35988300098" target="_blank">WhatsApp</a></p>
+  <p>&copy; 2025 - Wendell Rifas</p>
+</footer>
+
+<div id="popup-bonus">
+  🎉 Parabéns! Você ativou a CHANCE EM DOBRO! <span id="bonus-qtde"></span> cotas de bônus! 🎉
+  <br/>
+  <button id="btnClosePopup">Fechar</button>
+</div>
+
+<div id="fogueira"></div>
+
+<script>
+  const menosBtn = document.getElementById('menos');
+  const maisBtn = document.getElementById('mais');
+  const quantidadeInput = document.getElementById('quantidade');
+  const totalCotasSpan = document.getElementById('totalCotas');
+  const btnContinuar = document.getElementById('btnContinuar');
+  const formCadastro = document.getElementById('form-cadastro');
+  const finalizarBtn = document.getElementById('finalizar-btn');
+  const popupBonus = document.getElementById('popup-bonus');
+  const bonusQtdeSpan = document.getElementById('bonus-qtde');
+  const btnClosePopup = document.getElementById('btnClosePopup');
+  const fogueira = document.getElementById('fogueira');
+
+  const MIN_COTAS = 100;
+  const MAX_COTAS = 10000;
+  const STEP = 100;
+
+  function atualizarResumo() {
+    let qtd = parseInt(quantidadeInput.value) || MIN_COTAS;
+    if (qtd < MIN_COTAS) qtd = MIN_COTAS;
+    if (qtd > MAX_COTAS) qtd = MAX_COTAS;
+    quantidadeInput.value = qtd;
+
+    menosBtn.disabled = qtd <= MIN_COTAS;
+    maisBtn.disabled = qtd >= MAX_COTAS;
+
+    // Cotação: compra + bônus (mesmo valor)
+    totalCotasSpan.textContent = qtd * 2;
+  }
+
+  menosBtn.onclick = () => {
+    let val = parseInt(quantidadeInput.value) || MIN_COTAS;
+    val -= STEP;
+    if (val < MIN_COTAS) val = MIN_COTAS;
+    quantidadeInput.value = val;
+    atualizarResumo();
+  };
+
+  maisBtn.onclick = () => {
+    let val = parseInt(quantidadeInput.value) || MIN_COTAS;
+    val += STEP;
+    if (val > MAX_COTAS) val = MAX_COTAS;
+    quantidadeInput.value = val;
+    atualizarResumo();
+  };
+
+  quantidadeInput.oninput = () => {
+    let val = parseInt(quantidadeInput.value) || MIN_COTAS;
+    if (val % STEP !== 0) {
+      val = Math.round(val / STEP) * STEP;
+    }
+    if (val < MIN_COTAS) val = MIN_COTAS;
+    if (val > MAX_COTAS) val = MAX_COTAS;
+    quantidadeInput.value = val;
+    atualizarResumo();
+  };
+
+  btnContinuar.onclick = () => {
+    const qtd = parseInt(quantidadeInput.value);
+    bonusQtdeSpan.textContent = qtd;
+    mostrarPopupBonus();
+  };
+
+  btnClosePopup.onclick = () => {
+    esconderPopupBonus();
+    formCadastro.style.display = 'block';
+    btnContinuar.style.display = 'none';
+    // rolar para formulário
+    formCadastro.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  finalizarBtn.onclick = () => {
+    // aqui você validaria os dados, enviaria para backend e redirecionaria para pagamento
+    const nome = document.getElementById('nome').value.trim();
+    const whatsapp = document.getElementById('whatsapp').value.trim();
+ 
+
+    if (!nome || !whatsapp || !email) {
+      alert('Por favor, preencha todos os campos corretamente.');
+      return;
+    }
+
+    // Simulação de envio e redirecionamento:
+    alert(' ' + nome + '! A CHANCE EM DOBRO vai ficar disponível pra você por algumas horas, Você será redirecionado para o Site Oficial.');
+    window.location.href = 'https://wendellpremiacoes.com/sorteio/start-160-2025-0km-225';
+  };
+
+  function mostrarPopupBonus() {
+    popupBonus.classList.add('show');
+    explodeFogueira();
+  }
+
+  function esconderPopupBonus() {
+    popupBonus.classList.remove('show');
+    limparFogueira();
+  }
+
+  // Função para criar fogos de artifício animados
+  function explodeFogueira() {
+    limparFogueira();
+    const numFocos = 30;
+    for (let i = 0; i < numFocos; i++) {
+      const fogo = document.createElement('div');
+      fogo.classList.add('fogo');
+      fogo.style.left = '50%';
+      fogo.style.top = '50%';
+      // Valores aleatórios para animação
+      fogo.style.setProperty('--x', (Math.random() * 300 - 150) + 'px');
+      fogo.style.setProperty('--y', (Math.random() * -300) + 'px');
+      fogo.style.animationDelay = (i * 50) + 'ms';
+      fogueira.appendChild(fogo);
+
+      // Remove após animação
+      fogo.addEventListener('animationend', () => fogo.remove());
+    }
+  }
+  function limparFogueira() {
+    fogueira.innerHTML = '';
+  }
+
+  // Inicializa a página com valores certos
+  atualizarResumo();
+</script>
+
+</body>
+</html>
