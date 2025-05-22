@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rifa da Moto 0KM - Compra com Bônus</title>
+  <title>Wendell Premiações</title>
   <style>
     /* Reset básico */
     * {
@@ -275,7 +275,7 @@
 <body>
 
 <header>
-  <h1>🏍️ START 160 0KM</h1>
+  <h1>🏍️ START 160 0KM 2025</h1>
   <p>Escolha a quantidade de cotas e ganhe o mesmo valor em bônus grátis!</p>
 </header>
 
@@ -298,17 +298,21 @@
 
   <button class="continuar-btn" id="btnContinuar">Validar Cotas</button>
 
-  <form id="form-cadastro">
-    <input type="text" id="nome" placeholder="Primeiro Nome" required />
-    <input type="text" id="whatsapp" placeholder="WhatsApp com DDD" required />
-    <input type="email" id="email" placeholder="Opcional" required />
-    <button type="button" id="finalizar-btn">Finalizar</button>
-  </form>
+<form id="form-cadastro">
+  <input type="text" id="nome" name="nome" placeholder="Primeiro Nome" required />
+  <input type="text" id="whatsapp" name="whatsapp" placeholder="WhatsApp com DDD" required />
+  <input type="email" id="email" name="email" placeholder="Opcional" required />
+  <button type="button" id="finalizar-btn">Finalizar</button>
+</form>
+
 </main>
 
 <footer>
+              <!-- Termos de Uso e Política de Privacidade -->
+            <div class="text-white mt-4"><a href="termos.html" class="text-white">Termos de Uso</a> | <a href="privacidade.html" class="text-white">Política de Privacidade</a></div>
+          </div>
   <p>📱 Suporte: <a href="https://wa.me/35988300098" target="_blank">WhatsApp</a></p>
-  <p>&copy; 2025 - Wendell Rifas</p>
+  <p>&copy; 2025 - Wendell Premiações</p>
 </footer>
 
 <div id="popup-bonus">
@@ -442,6 +446,45 @@
   // Inicializa a página com valores certos
   atualizarResumo();
 </script>
+
+<script>
+document.getElementById('finalizar-btn').addEventListener('click', async function () {
+  const nome = document.getElementById('nome').value;
+  let whatsapp = document.getElementById('whatsapp').value.replace(/\D/g, ''); // remove espaços, parênteses, traços etc.
+  const email = document.getElementById('email').value;
+
+  // Adiciona 55 se ainda não estiver no início
+  if (!whatsapp.startsWith('55')) {
+    whatsapp = '55' + whatsapp;
+  }
+
+  const dados = {
+    nome: nome,
+    whatsapp: whatsapp,
+    email: email
+  };
+
+  try {
+    const resposta = await fetch('https://new-backend.botconversa.com.br/api/v1/webhooks-automation/catch/141688/H4QLs3WaAGdl/', { // substitua com seu webhook real
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dados)
+    });
+
+    if (resposta.ok) {
+      alert('Dados enviados com sucesso!');
+    } else {
+      alert('Erro ao enviar dados.');
+    }
+  } catch (erro) {
+    console.error('Erro no envio:', erro);
+    alert('Falha ao conectar com o servidor.');
+  }
+});
+</script>
+
 
 </body>
 </html>
