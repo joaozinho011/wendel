@@ -327,25 +327,29 @@
     }
   </style>
 
-  	<!-- Meta Pixel Code -->
+<!-- Pixel base do Facebook -->
 <script>
   !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod ?
+  n.callMethod.apply(n,arguments) : n.queue.push(arguments)};
   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
   n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src='https://connect.facebook.net/en_US/fbevents.js';
-  s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script');
-  
-  fbq('init', '3933066473609927'); 
-  fbq('track', 'PageView');
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+
+  // SEU ID DO PIXEL AQUI:
+  fbq('init', '3933066473609927'); // substitua pelo seu ID real
+
+  // Evento personalizado do seu funil gamificado
+  fbq('trackCustom', 'PageViewFunil');
 </script>
+
+<!-- Pixel de fallback para nos navegadores sem JavaScript -->
 <noscript>
   <img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=3933066473609927&ev=PageView&noscript=1"/>
+    src="https://www.facebook.com/tr?id=123456789012345&ev=PageViewFunil&noscript=1" />
 </noscript>
-<!-- End Meta Pixel Code -->
 
 </head>
 <body>
@@ -626,15 +630,19 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
   const spinSound = document.getElementById("spin-sound");
 
   const premios = [
-    "80%",
+    "NADA",
     "R$1.000,00",
     "R$500,00",
     "30%",
     "R$100,00",
     "NADA",
+    "R$200,00",
+    "R$300,00",
+    "10%",
+    "80%",
   ];
 
-  const cores = ["#004488", "#003366", "#00bfff", "#004488", "#00aaff", "#FF0000"];
+  const cores = ["#FF0000", "#003366", "#00bfff", "#004488", "#00aaff", "#FF0000", "#003366", "#00bfff", "#004488", "#00aaff"];
 
   let angulo = 0;
   let girando = false;
@@ -678,10 +686,10 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
     const premioDesejado = "80%";
     const indice = premios.indexOf(premioDesejado);
     const degPorSetor = 360 / premios.length;
-    const anguloAlvo = 360 * 5 + (360 - indice * degPorSetor - degPorSetor / 2); // 5 voltas + setor alvo
+    const anguloAlvo = 360 * 10 + (360 - indice * degPorSetor - degPorSetor / 2); // 5 voltas + setor alvo
 
     let start = null;
-    let duracao = 4000; // 4 segundos
+    let duracao = 10000; // 4 segundos
     let rotacaoInicial = 0;
 
     function animarRoleta(timestamp) {
@@ -769,9 +777,12 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
     { name: "Ana Maria", city: "" },
     { name: "Lucas", city: "" },
     { name: "Mariana", city: "" },
-    { name: "Laiana", city: "" },
+    { name: "Daiana", city: "" },
     { name: "Daniel", city: "" },
     { name: "Carlos", city: "" },
+    { name: "Yasmin", city: "" },
+    { name: "Lara", city: "" },
+    { name: "Richard", city: "" },
   ];
 
   let index = 0;
@@ -791,30 +802,61 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
 
     setTimeout(() => {
       el.classList.remove('show');
-    }, 3000);
+    }, 4000);
 
     index = (index + 1) % notifications.length;
   }
 
+  async function fetchCityFromCoordinates(lat, lon) {
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`);
+      const data = await response.json();
+      return data.address.city || data.address.town || data.address.village || "sua cidade";
+    } catch (e) {
+      console.error("Erro ao buscar cidade por coordenadas", e);
+      return "sua cidade";
+    }
+  }
+
   async function fetchCityAndStart() {
-    let userCity = "sua cidade";
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+
+        const city = await fetchCityFromCoordinates(lat, lon);
+        notifications.forEach(n => n.city = city);
+
+        showNotification();
+        setInterval(showNotification, 10000);
+      }, (error) => {
+        console.error("Permissão negada ou erro na localização", error);
+        fallbackToIP(); // Usa IP se não tiver GPS
+      });
+    } else {
+      fallbackToIP(); // Usa IP se o navegador não tiver geolocalização
+    }
+  }
+
+  async function fallbackToIP() {
+    let location = "sua cidade";
 
     try {
       const response = await fetch('https://ipwhois.app/json/');
       const data = await response.json();
-      if (data.city) userCity = data.city;
+      if (data.city) location = data.city;
     } catch (e) {
-      console.error("Erro ao buscar cidade", e);
+      console.error("Erro com IP", e);
     }
 
-    notifications.forEach(n => n.city = userCity);
-
+    notifications.forEach(n => n.city = location);
     showNotification();
     setInterval(showNotification, 10000);
   }
 
   fetchCityAndStart();
 </script>
+
 
 <!-- Estilos do pop-up -->
 <style>
@@ -918,11 +960,37 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
     document.getElementById("resgatar-btn").addEventListener("click", () => {
       document.getElementById("como-participar").style.display = "block";
 
+       // Dispara evento de finalização do funil no Pixel Facebook
+       fbq('trackCustom', 'finalizoufunil');
+
       setTimeout(() => {
         window.location.href = "https://wendellpremiacoes.com/sorteio/start-160-2025-0km-225";
       }, 5000);
     });
   }
+</script>
+
+<script>
+  // Evento para o botão "Validar Cotas"
+  document.getElementById('btnContinuar').addEventListener('click', function() {
+    fbq('trackCustom', 'clicouvalidarcotas');
+  });
+
+  // Evento para o botão "Finalizar Cadastro"
+  document.getElementById('finalizar-btn').addEventListener('click', function() {
+    fbq('trackCustom', 'clicoufinalizarcadastro');
+  });
+
+  // Evento para o botão "GIRAR" da roleta
+  document.getElementById('girar-btn').addEventListener('click', function() {
+    fbq('trackCustom', 'clicougirarroleta');
+  });
+
+  // Evento para o botão "Resgatar Prêmio"
+  document.getElementById('resgatar-btn').addEventListener('click', function() {
+    fbq('trackCustom', 'clicouresgatar');
+  }
+  
 </script>
 
 
