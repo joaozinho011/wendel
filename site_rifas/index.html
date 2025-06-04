@@ -400,38 +400,6 @@
 </div>
 
 
-<!-- Roleta, escondida inicialmente -->
-<div id="roleta-container" style="display:none; text-align:center; margin-top:20px;">
-  <h1>Gire a Roleta</h1>
-  <div id="roleta" style="
-    width: 300px; height: 300px; border: 10px solid #00bfff; border-radius: 50%; 
-    margin: 20px auto;
-    background: conic-gradient(
-      #00bfff 0deg 60deg,
-      #0088cc 60deg 120deg,
-      #005577 120deg 180deg,
-      #00bfff 180deg 240deg,
-      #0088cc 240deg 300deg,
-      #005577 300deg 360deg
-    );
-    position: relative;
-  ">
-    <div class="seta" style="
-      width: 0; height: 0;
-      border-left: 20px solid transparent;
-      border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
-      position: absolute; top: -30px; left: 50%;
-      transform: translateX(-50%);
-    "></div>
-  </div>
-  <button id="girar-btn" style="
-    padding: 12px 25px; background: #00bfff; color: #000; font-weight: bold;
-    border: none; border-radius: 8px; font-size: 1.2rem; cursor: pointer;
-  ">Girar</button>
-  <div id="resultado" style="margin-top:20px; font-size:1.4rem; font-weight:bold; color:#00ff00;"></div>
-</div>
-
 
 </main>
 
@@ -689,7 +657,7 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
     const anguloAlvo = 360 * 10 + (360 - indice * degPorSetor - degPorSetor / 2); // 5 voltas + setor alvo
 
     let start = null;
-    let duracao = 10000; // 4 segundos
+    let duracao = 8000; // 4 segundos
     let rotacaoInicial = 0;
 
     function animarRoleta(timestamp) {
@@ -971,26 +939,23 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
 </script>
 
 <script>
-  // Evento para o botão "Validar Cotas"
-  document.getElementById('btnContinuar').addEventListener('click', function() {
-    fbq('trackCustom', 'clicouvalidarcotas');
-  });
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById('btnContinuar')?.addEventListener('click', function() {
+      fbq('trackCustom', 'clicouvalidarcotas');
+    });
 
-  // Evento para o botão "Finalizar Cadastro"
-  document.getElementById('finalizar-btn').addEventListener('click', function() {
-    fbq('trackCustom', 'clicoufinalizarcadastro');
-  });
+    document.getElementById('finalizar-btn')?.addEventListener('click', function() {
+      fbq('trackCustom', 'clicoufinalizarcadastro');
+    });
 
-  // Evento para o botão "GIRAR" da roleta
-  document.getElementById('girar-btn').addEventListener('click', function() {
-    fbq('trackCustom', 'clicougirarroleta');
-  });
+    document.getElementById('girar-btn')?.addEventListener('click', function() {
+      fbq('trackCustom', 'clicougirarroleta');
+    });
 
-  // Evento para o botão "Resgatar Prêmio"
-  document.getElementById('resgatar-btn').addEventListener('click', function() {
-    fbq('trackCustom', 'clicouresgatar');
-  }
-  
+    document.getElementById('resgatar-btn')?.addEventListener('click', function() {
+      fbq('trackCustom', 'clicouresgatar');
+    });
+  });
 </script>
 
 
