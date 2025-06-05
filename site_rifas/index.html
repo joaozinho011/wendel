@@ -251,6 +251,7 @@
     footer a:hover {
       text-decoration: underline;
     }
+
     /* Popup bônus */
     #popup-bonus {
       position: fixed;
@@ -315,6 +316,7 @@
       animation: fogoAnim 800ms ease-out forwards;
       opacity: 0;
     }
+
     @keyframes fogoAnim {
       0% {
         opacity: 1;
@@ -355,51 +357,26 @@
 <body>
 
 <header>
-  <h1>🏍️ START 160 0KM</h1>
-  <p>Ganhe 1 Giro na Roleta Grátis, Até R$1.000,00 em Prêmios</p>
+  <h1>🏍️START 160 0KM🏍️</h1>
+  <p>🎡Gire a Roleta Grátis🎡</p>
 </header>
 
 <main>
-<img
+
+  <img
   src="imagens/moto.jpg"
   alt="Moto 0KM"
   class="premio-img"
 />
 
-  <div class="quantidade-control">
-    <button id="menos" aria-label="Diminuir quantidade">−</button>
-    <input type="number" id="quantidade" min="100" max="10000" step="100" value="500" />
-    <button id="mais" aria-label="Aumentar quantidade">+</button>
-  </div>
-
-  <div id="resumo">
-    Receba <span id="totalCotas">1000</span> cotas (Roleta Grátis + bônus)
-  </div>
-
-  <button class="continuar-btn" id="btnContinuar">Validar Cotas</button>
-
-<form id="form-cadastro">
-  <input type="text" id="nome" name="nome" placeholder="Primeiro Nome" required />
-  <input type="text" id="whatsapp" name="whatsapp" placeholder="WhatsApp com DDD" required />
-  <input type="text" id="cidade" name="cidade" placeholder="Digite a sua cidade" required />
-  <button type="button" id="finalizar-btn">Finalizar</button>
-</form>
-
-
 <div id="roleta-container" style="display: none; margin-top: 30px; text-align: center;">
+  <div id="ponteiro-roleta"></div>
   <canvas id="roleta" width="300" height="300" style="background: #001122; border-radius: 50%; box-shadow: 0 0 15px #00bfff;"></canvas>
   <br />
   <button id="girar-btn" style="margin-top: 20px; padding: 12px 25px; font-size: 1.2rem; border-radius: 12px; background: #00bfff; color: #001122; font-weight: bold; border: none; cursor: pointer;">
     GIRAR
   </button>
 </div>
-
-<div id="popup">
-  <div id="popup-mensagem"></div>
-  <button id="popup-fechar">Fechar</button>
-</div>
-
-
 
 </main>
 
@@ -420,95 +397,13 @@
 <div id="fogueira"></div>
 
 <script>
-  const menosBtn = document.getElementById('menos');
-  const maisBtn = document.getElementById('mais');
-  const quantidadeInput = document.getElementById('quantidade');
-  const totalCotasSpan = document.getElementById('totalCotas');
-  const btnContinuar = document.getElementById('btnContinuar');
-  const formCadastro = document.getElementById('form-cadastro');
-  const finalizarBtn = document.getElementById('finalizar-btn');
-  const popupBonus = document.getElementById('popup-bonus');
-  const bonusQtdeSpan = document.getElementById('bonus-qtde');
-  const btnClosePopup = document.getElementById('btnClosePopup');
-  const fogueira = document.getElementById('fogueira');
-
-  const MIN_COTAS = 100;
-  const MAX_COTAS = 10000;
-  const STEP = 100;
-
-  function atualizarResumo() {
-    let qtd = parseInt(quantidadeInput.value) || MIN_COTAS;
-    if (qtd < MIN_COTAS) qtd = MIN_COTAS;
-    if (qtd > MAX_COTAS) qtd = MAX_COTAS;
-    quantidadeInput.value = qtd;
-
-    menosBtn.disabled = qtd <= MIN_COTAS;
-    maisBtn.disabled = qtd >= MAX_COTAS;
-
-    // Cotação: compra + bônus (mesmo valor)
-    totalCotasSpan.textContent = qtd * 2;
-  }
-
-  menosBtn.onclick = () => {
-    let val = parseInt(quantidadeInput.value) || MIN_COTAS;
-    val -= STEP;
-    if (val < MIN_COTAS) val = MIN_COTAS;
-    quantidadeInput.value = val;
-    atualizarResumo();
-  };
-
-  maisBtn.onclick = () => {
-    let val = parseInt(quantidadeInput.value) || MIN_COTAS;
-    val += STEP;
-    if (val > MAX_COTAS) val = MAX_COTAS;
-    quantidadeInput.value = val;
-    atualizarResumo();
-  };
-
-  quantidadeInput.oninput = () => {
-    let val = parseInt(quantidadeInput.value) || MIN_COTAS;
-    if (val % STEP !== 0) {
-      val = Math.round(val / STEP) * STEP;
-    }
-    if (val < MIN_COTAS) val = MIN_COTAS;
-    if (val > MAX_COTAS) val = MAX_COTAS;
-    quantidadeInput.value = val;
-    atualizarResumo();
-  };
-
-  btnContinuar.onclick = () => {
-    const qtd = parseInt(quantidadeInput.value);
-    bonusQtdeSpan.textContent = qtd;
-    mostrarPopupBonus();
-  };
-
-  btnClosePopup.onclick = () => {
-    esconderPopupBonus();
-    formCadastro.style.display = 'block';
-    btnContinuar.style.display = 'none';
-    // rolar para formulário
-    formCadastro.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  finalizarBtn.onclick = () => {
-    // aqui você validaria os dados, enviaria para backend e redirecionaria para pagamento
-    const nome = document.getElementById('nome').value.trim();
-    const whatsapp = document.getElementById('whatsapp').value.trim();
-    const cidade = document.getElementById('cidade').value.trim();
-
-    if (!nome || !whatsapp || !cidade) {
-      alert('Por favor, preencha todos os campos corretamente.');
-      return;
-    }
-
 
 // Exibe a roleta (escondendo o formulário, por exemplo)
-document.getElementById('form-cadastro').style.display = 'none';
 document.getElementById('roleta-container').style.display = 'block';
 
 // Opcional: só redirecione depois de girar a roleta e mostrar resultado (ou remova completamente o redirecionamento)
 
-  };
+  
 
   function mostrarPopupBonus() {
     popupBonus.classList.add('show');
@@ -547,43 +442,6 @@ document.getElementById('roleta-container').style.display = 'block';
   atualizarResumo();
 </script>
 
-<script>
-document.getElementById('finalizar-btn').addEventListener('click', async function () {
-  const nome = document.getElementById('nome').value;
-  let whatsapp = document.getElementById('whatsapp').value.replace(/\D/g, ''); // remove espaços, parênteses, traços etc.
-  const cidade = document.getElementById('cidade').value;
-
-  // Adiciona 55 se ainda não estiver no início
-  if (!whatsapp.startsWith('55')) {
-    whatsapp = '55' + whatsapp;
-  }
-
-  const dados = {
-    nome: nome,
-    whatsapp: whatsapp,
-    cidade: cidade
-  };
-
-  try {
-    const resposta = await fetch('https://new-backend.botconversa.com.br/api/v1/webhooks-automation/catch/141688/H4QLs3WaAGdl/', { // substitua com seu webhook real
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(dados)
-    });
-
-    if (resposta.ok) {
-      alert('🎡Gire a roleta e concorra a prêmios grátis🥳');
-    } else {
-      alert('🎡Gire a roleta e concorra a prêmios grátis🥳');
-    }
-  } catch (erro) {
-    console.error('Erro no envio:', erro);
-    alert('🎡Gire a roleta e concorra a prêmios grátis🥳');
-  }
-});
-</script>
 <!-- Sons da web -->
 <audio id="spin-sound" preload="auto">
   <source src="audio/roletas.mp3" type="audio/mpeg">
@@ -597,20 +455,20 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
   const container = document.getElementById("roleta-container");
   const spinSound = document.getElementById("spin-sound");
 
-  const premios = [
-    "NADA",
-    "R$1.000,00",
-    "R$500,00",
-    "30%",
-    "R$100,00",
-    "NADA",
-    "R$200,00",
-    "R$300,00",
-    "10%",
-    "80%",
-  ];
+const premios = [
+  "NADA",        // 0
+  "R$1.000,00",  // 1
+  "2X",          // 2
+  "R$300,00",    // 3
+  "R$100,00",    // 4
+  "NADA",        // 5
+  "R$200,00",    // 6
+  "2X",          // 7 ← ESTE
+  "R$800,00",    // 8
+  "R$500,00"     // 9
+];
 
-  const cores = ["#FF0000", "#003366", "#00bfff", "#004488", "#00aaff", "#FF0000", "#003366", "#00bfff", "#004488", "#00aaff"];
+  const cores = ["#FF0000", "#003366", "#0000FF", "#004488", "#00aaff", "#FF0000", "#003366", "#0000FF", "#004488", "#00aaff"];
 
   let angulo = 0;
   let girando = false;
@@ -650,47 +508,74 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
     spinSound.currentTime = 0;
     spinSound.play();
 
-    // 🎯 Sempre parar no setor "30%"
-    const premioDesejado = "80%";
-    const indice = premios.indexOf(premioDesejado);
-    const degPorSetor = 360 / premios.length;
-    const anguloAlvo = 360 * 10 + (360 - indice * degPorSetor - degPorSetor / 2); // 5 voltas + setor alvo
+// 🎯 Sempre parar no "2X" da direita (índice 7)
+const premioDesejado = "2X";
+const indice = 7; // segundo "2X"
+const degPorSetor = 360 / premios.length;
+const voltas = 8;
 
-    let start = null;
-    let duracao = 8000; // 4 segundos
-    let rotacaoInicial = 0;
+const anguloSetor = indice * degPorSetor + degPorSetor / 2;
+const anguloAlvo = 360 * voltas - (anguloSetor - 270);
 
-    function animarRoleta(timestamp) {
-      if (!start) start = timestamp;
-      const progresso = timestamp - start;
-      const easeOut = 1 - Math.pow(1 - progresso / duracao, 3); // curva de desaceleração
-      const anguloAtual = rotacaoInicial + easeOut * anguloAlvo;
-      roleta.style.transform = `rotate(${anguloAtual}deg)`;
+let start = null;
+let duracao = 3500;
+let rotacaoInicial = 0;
 
-      if (progresso < duracao) {
-        requestAnimationFrame(animarRoleta);
-      } else {
-        spinSound.pause();
-        spinSound.currentTime = 0;
-        setTimeout(() => {
-          mostrarPopupPremio();
+function animarRoleta(timestamp) {
+  if (!start) start = timestamp;
+  const progresso = timestamp - start;
+  const easeOut = 1 - Math.pow(1 - progresso / duracao, 3);
+  const anguloAtual = rotacaoInicial + easeOut * anguloAlvo;
 
-        }, 500);
-      }
-    }
+  roleta.style.transform = `rotate(${anguloAtual}deg)`;
+
+  if (progresso < duracao) {
+    requestAnimationFrame(animarRoleta);
+  } else {
+    spinSound.pause();
+    spinSound.currentTime = 0;
+    setTimeout(() => {
+      mostrarPopupPremio();
+      girando = false;  // libera para girar novamente
+    }, 500);
+  }
+}
+
 
     requestAnimationFrame(animarRoleta);
   });
 
-  // Mostrar roleta após finalizar cadastro
-  document.getElementById("finalizar-btn")?.addEventListener("click", () => {
-    container.style.display = "block";
-    document.getElementById("form-cadastro").style.display = "none";
-  });
+// Mostrar roleta automaticamente ao carregar o site
+window.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("roleta-container").style.display = "block";
+});
+
 </script>
 
 
 <style>
+
+#roleta-container {
+  position: relative; /* necessário para posicionar o ponteiro corretamente */
+  display: none;
+  margin-top: 30px;
+  text-align: center;
+}
+
+ #ponteiro-roleta {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 20px solid red;
+  z-index: 10;
+  transform: translateX(-50%) rotate(180deg); /* ponta pra baixo */
+}
+
+
   #social-proof {
     position: fixed;
     bottom: 20px;
@@ -770,7 +655,7 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
 
     setTimeout(() => {
       el.classList.remove('show');
-    }, 4000);
+    }, 3000);
 
     index = (index + 1) % notifications.length;
   }
@@ -796,7 +681,7 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
         notifications.forEach(n => n.city = city);
 
         showNotification();
-        setInterval(showNotification, 10000);
+        setInterval(showNotification, 5000);
       }, (error) => {
         console.error("Permissão negada ou erro na localização", error);
         fallbackToIP(); // Usa IP se não tiver GPS
@@ -819,7 +704,7 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
 
     notifications.forEach(n => n.city = location);
     showNotification();
-    setInterval(showNotification, 10000);
+    setInterval(showNotification, 5000);
   }
 
   fetchCityAndStart();
@@ -894,9 +779,9 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
 <div id="popup-premio">
   <div class="card">
     <h2>🎉 Parabéns!</h2>
-    <p>Você ganhou <strong>80% de desconto</strong>!</p>
+    <p>Você Ativou 2X <strong>Chance em Dobro</strong>!</p>
     <button id="resgatar-btn">Resgatar Prêmio</button>
-    <p id="como-participar">Seu bônus está disponivel no site oficial, Selecione na aba de promoção, <strong style="color: green;">PARA ATIVAR!</strong>! <p>De <s>R$ 50,00</s> por apenas <strong style="color: green;">R$ 9,95</strong>! 1.000 cotas<p>De <s>R$ 100,00</s> por apenas <strong style="color: green;">R$ 15,00</strong>! 2.000 cotas<p>De <s>R$ 500,00</s> por apenas <strong style="color: green;">R$ 70,00</strong>! 10.000 cotas</p>
+    <p id="como-participar">Redirecionado para o <strong style="color: blue;">SITE OFICIAL</strong>... <p> Ex: Compre <s>100 cotas</s> e leve <strong style="color: green;">200 cotas</strong>! CHANCE EM DOBRO<p> Ex: Compre <s>1.000 cotas</s> e leve <strong style="color: green;">2.000</strong>! CHANCE EM DOBRO<p> Ex: Compre<s>2.000 cotas</s> e leve <strong style="color: green;">4.000</strong>! CHANCE EM DOBRO</p>
 </p>
   </div>
 </div>
@@ -933,21 +818,13 @@ document.getElementById('finalizar-btn').addEventListener('click', async functio
 
       setTimeout(() => {
         window.location.href = "https://wendellpremiacoes.com/sorteio/start-160-2025-0km-225";
-      }, 5000);
+      }, 2000);
     });
   }
 </script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById('btnContinuar')?.addEventListener('click', function() {
-      fbq('trackCustom', 'clicouvalidarcotas');
-    });
-
-    document.getElementById('finalizar-btn')?.addEventListener('click', function() {
-      fbq('trackCustom', 'clicoufinalizarcadastro');
-    });
-
     document.getElementById('girar-btn')?.addEventListener('click', function() {
       fbq('trackCustom', 'clicougirarroleta');
     });
