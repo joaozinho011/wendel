@@ -856,6 +856,33 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 </script>
 
+<script>
+  document.getElementById('girar-btn').addEventListener('click', function () {
+    dataLayer.push({
+      event: 'girar_botao_click', // Nome do evento personalizado
+      acao: 'clique',
+      elemento: 'botao_girar',
+      pagina: window.location.pathname
+    });
+  });
+</script>
+
+<script>
+  document.getElementById("resgatar-btn").addEventListener("click", () => {
+    // Mostrar o conteúdo
+    document.getElementById("como-participar").style.display = "block";
+
+    // Enviar evento personalizado para o GTM
+    dataLayer.push({
+      event: 'resgatar_premio_click',
+      acao: 'clique',
+      elemento: 'botao_resgatar',
+      pagina: window.location.pathname
+    });
+  });
+</script>
+
+
 
 </body>
 </html>
