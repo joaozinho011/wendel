@@ -353,8 +353,21 @@
     src="https://www.facebook.com/tr?id=123456789012345&ev=PageViewFunil&noscript=1" />
 </noscript>
 
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-M6B3P3TX');</script>
+<!-- End Google Tag Manager -->
+
 </head>
 <body>
+ 
+ <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M6B3P3TX"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <header>
   <h1>🏍️START 160 0KM🏍️</h1>
@@ -470,7 +483,7 @@ const premios = [
 
   const cores = ["#FF0000", "#003366", "#0000FF", "#004488", "#00aaff", "#FF0000", "#003366", "#0000FF", "#004488", "#00aaff"];
 
-  let angulo = 0;
+  let angulo = 360;
   let girando = false;
 
   function desenharRoleta() {
@@ -515,11 +528,16 @@ const degPorSetor = 360 / premios.length;
 const voltas = 8;
 
 const anguloSetor = indice * degPorSetor + degPorSetor / 2;
-const anguloAlvo = 360 * voltas - (anguloSetor - 270);
+
+const premioInicial = "R$1.000,00"; // prêmio para iniciar a roleta
+const indiceInicial = premios.indexOf(premioInicial);
+const anguloSetorInicial = indiceInicial * degPorSetor + degPorSetor / 2;
+
+const rotacaoInicial = 270 - anguloSetorInicial;
+const anguloAlvo = 360 * voltas + (270 - anguloSetor) - rotacaoInicial;
 
 let start = null;
 let duracao = 3500;
-let rotacaoInicial = 0;
 
 function animarRoleta(timestamp) {
   if (!start) start = timestamp;
@@ -540,6 +558,9 @@ function animarRoleta(timestamp) {
     }, 500);
   }
 }
+
+// Antes de girar, posiciona a roleta na posição inicial
+roleta.style.transform = `rotate(${rotacaoInicial}deg)`;
 
 
     requestAnimationFrame(animarRoleta);
